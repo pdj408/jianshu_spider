@@ -5,6 +5,7 @@ from scrapy.linkextractor import LinkExtractor
 from scrapy.spiders import Rule, CrawlSpider
 from jianshu_spider.items import JianshuSpiderItem
 
+# 最重要的是继承 CrawlSpider
 class JianshuSpider(CrawlSpider):
     name = 'jianshu'
     allowed_domains = ['jianshu.com']
@@ -15,12 +16,14 @@ class JianshuSpider(CrawlSpider):
     pattern = '.*jianshu.com/u/*.'
     pagelink = LinkExtractor(allow=pattern)
 
+    # 可以写多个rule规则
     rules = [
         # 只要符合匹配规则，在rule中都会发送请求，同时调用回调函数处理响应。
         # rule就是批量处理请求。
         Rule(pagelink,callback='parse_page',follow=True)
     ]
 
+    # 不能写parse方法，因为源码中已经有了，会覆盖导致程序不能跑
     def parse_page(self, response):
         print('======================================')
         for each in response.xpath("//div[@class='main-top']"):
